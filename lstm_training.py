@@ -123,8 +123,7 @@ def inv_scale(vals):
 
 
 # ---------------------------------------------------------------------
-# RMSLE helper — clip to avoid log(0) errors
-# Scale-invariant; identical for normalized and denormalized values
+# RMSLE helper — scale-invariant metric
 # ---------------------------------------------------------------------
 def compute_rmsle(y_true, y_pred):
     y_true = np.clip(y_true, 0, None)
@@ -139,8 +138,8 @@ def compute_rmsle(y_true, y_pred):
 # ---------------------------------------------------------------------
 seeds = [42, 123, 256, 789, 1024]
 
-all_rmse,      all_mae,      all_r2,      all_mape      = [], [], [], []
-all_rmse_norm, all_mae_norm, all_rmsle                  = [], [], []
+all_mse,  all_rmse, all_mae,  all_r2,   all_mape  = [], [], [], [], []
+all_mse_norm, all_rmse_norm, all_mae_norm, all_rmsle = [], [], [], []
 
 best_val_loss = float('inf')
 best_model    = None
@@ -179,8 +178,10 @@ for seed in seeds:
 
     # Normalized metrics
     y_pred_norm = model.predict(Xte, verbose=0).flatten()
-    rmse_n = np.sqrt(mean_squared_error(yte, y_pred_norm))
+    mse_n  = mean_squared_error(yte, y_pred_norm)
+    rmse_n = np.sqrt(mse_n)
     mae_n  = mean_absolute_error(yte, y_pred_norm)
+    all_mse_norm.append(mse_n)
     all_rmse_norm.append(rmse_n)
     all_mae_norm.append(mae_n)
 
@@ -192,18 +193,20 @@ for seed in seeds:
     y_true_inv = inv_scale(yte)
     y_pred_inv = inv_scale(y_pred_norm)
 
-    rmse_ = np.sqrt(mean_squared_error(y_true_inv, y_pred_inv))
+    mse_  = mean_squared_error(y_true_inv, y_pred_inv)
+    rmse_ = np.sqrt(mse_)
     mae_  = mean_absolute_error(y_true_inv, y_pred_inv)
     mape_ = mean_absolute_percentage_error(y_true_inv, y_pred_inv)
     r2_   = r2_score(y_true_inv, y_pred_inv)
 
+    all_mse.append(mse_)
     all_rmse.append(rmse_)
     all_mae.append(mae_)
     all_mape.append(mape_)
     all_r2.append(r2_)
 
-    print(f"  RMSE: {rmse_:.4f} | MAE: {mae_:.4f} | "
-          f"RMSLE: {rmsle_:.4f} | R2: {r2_:.4f}")
+    print(f"  MSE: {mse_:.4f} | RMSE: {rmse_:.4f} | "
+          f"MAE: {mae_:.4f} | RMSLE: {rmsle_:.4f} | R2: {r2_:.4f}")
 
 
 # ---------------------------------------------------------------------
@@ -211,10 +214,12 @@ for seed in seeds:
 # ---------------------------------------------------------------------
 print("\n=== LSTM RESULTS (mean +/- std over 5 seeds) ===")
 print(f"\nNormalized:")
+print(f"  MSE   : {np.mean(all_mse_norm):.4f} +/- {np.std(all_mse_norm):.4f}")
 print(f"  RMSE  : {np.mean(all_rmse_norm):.4f} +/- {np.std(all_rmse_norm):.4f}")
 print(f"  MAE   : {np.mean(all_mae_norm):.4f}  +/- {np.std(all_mae_norm):.4f}")
 print(f"  RMSLE : {np.mean(all_rmsle):.4f}  +/- {np.std(all_rmsle):.4f}")
 print(f"\nDenormalized (AQI scale):")
+print(f"  MSE   : {np.mean(all_mse):.2f} +/- {np.std(all_mse):.2f}")
 print(f"  RMSE  : {np.mean(all_rmse):.2f} +/- {np.std(all_rmse):.2f}")
 print(f"  MAE   : {np.mean(all_mae):.2f}  +/- {np.std(all_mae):.2f}")
 print(f"  MAPE  : {np.mean(all_mape)*100:.2f}% +/- {np.std(all_mape)*100:.2f}%")
@@ -227,16 +232,21 @@ print(f"Batch size    : {batch_size}")
 
 
 # ---------------------------------------------------------------------
+# Save per-seed metrics for paired t-test
+# Run bilstm_training.py after this to get t-test results
+# ---------------------------------------------------------------------
+np.save("lstm_rmse_seeds.npy", np.array(all_rmse_norm))
+np.save("lstm_mae_seeds.npy",  np.array(all_mae_norm))
+print("\nPer-seed metrics saved for paired t-test.")
+
+
+# ---------------------------------------------------------------------
 # 8. Validation on Airveda Sensor Data
 # ---------------------------------------------------------------------
-
-# Load outdoor sensor data (Client 2 - all 6 features available)
 sensor_outdoor = pd.read_csv("sensor_outdoor.csv",
                               parse_dates=['Date']).set_index('Date')
-
-# Load indoor sensor data (Client 3 - PM2.5 and PM10 only)
-sensor_indoor = pd.read_csv("sensor_indoor.csv",
-                             parse_dates=['Date']).set_index('Date')
+sensor_indoor  = pd.read_csv("sensor_indoor.csv",
+                              parse_dates=['Date']).set_index('Date')
 
 # Zero-pad missing gaseous features for indoor sensor
 # Indoor environment maintains consistently low gaseous pollutant levels
@@ -249,26 +259,25 @@ sensor_outdoor = sensor_outdoor[features]
 
 
 def evaluate_on_sensor(sensor_df, label):
-    # Scale using same scaler fit on CPCB training data
-    sensor_input = np.hstack([
+    sensor_input  = np.hstack([
         sensor_df[features].values,
         np.zeros((len(sensor_df), 1))
     ])
     sensor_scaled = scaler.transform(sensor_input)
-
     X_sensor, y_sensor = build_sequences(sensor_scaled, window_size)
 
     y_pred_sensor     = best_model.predict(X_sensor, verbose=0).flatten()
     y_pred_sensor_inv = inv_scale(y_pred_sensor)
     y_true_sensor_inv = inv_scale(y_sensor)
 
-    rmse_s  = np.sqrt(mean_squared_error(y_true_sensor_inv,
-                                          y_pred_sensor_inv))
+    mse_s   = mean_squared_error(y_true_sensor_inv, y_pred_sensor_inv)
+    rmse_s  = np.sqrt(mse_s)
     mae_s   = mean_absolute_error(y_true_sensor_inv, y_pred_sensor_inv)
     rmsle_s = compute_rmsle(y_sensor, y_pred_sensor)
     r2_s    = r2_score(y_true_sensor_inv, y_pred_sensor_inv)
 
     print(f"\n=== Sensor Validation: {label} ===")
+    print(f"  MSE   : {mse_s:.4f}")
     print(f"  RMSE  : {rmse_s:.4f}")
     print(f"  MAE   : {mae_s:.4f}")
     print(f"  RMSLE : {rmsle_s:.4f}")
@@ -333,3 +342,6 @@ plt.title("Feature Correlation Heatmap")
 
 plt.tight_layout()
 plt.show()
+
+
+
