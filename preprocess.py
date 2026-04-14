@@ -21,13 +21,14 @@ df = df[~df.index.duplicated(keep='first')]
 # Create full hourly time range
 full_range = pd.date_range(start=df.index.min(), end=df.index.max(), freq='h')
 
-# Reindex to full hourly range (missing timestamps → NaN)
+# Reindex to full hourly range (missing timestamps -> NaN)
 df = df.reindex(full_range)
 
-# Interpolate missing values
+# Linear interpolation to fill missing values
+# Mean/mode imputation avoided to preserve temporal dependencies
 df = df.interpolate(method='linear', limit_direction='both')
 
-# Fill any remaining missing values
+# Fill any remaining edge values
 df = df.ffill().bfill()
 
 # Reset index so 'Date' becomes a column
