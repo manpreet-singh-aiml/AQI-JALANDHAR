@@ -54,3 +54,5 @@ df['AQI'] = df[['AQI_PM2.5', 'AQI_PM10', 'AQI_NO2', 'AQI_SO2', 'AQI_CO', 'AQI_Oz
 df.to_csv("jld_aqi_with_aqi.csv", index=False)
 
 print("AQI calculation complete. Output saved to 'jld_aqi_with_aqi.csv'.")
+
+
