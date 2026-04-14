@@ -13,6 +13,8 @@ as described in the paper:
 ---
 
 ## Project Structure
+
+```
 AQI-JALANDHAR/
 ├── preprocess.py          # Timestamp correction + missing value interpolation
 ├── compute_aqi.py         # CPCB-standard AQI sub-index computation
@@ -20,8 +22,7 @@ AQI-JALANDHAR/
 ├── bilstm_training.py     # BiLSTM + Attention — 5-seed training + sensor validation
 ├── federated_approach.py  # Federated Learning (FedAvg + Paillier HE)
 └── requirements.txt
-
----
+```
 
 ## Features
 
@@ -140,3 +141,5 @@ Soft Computing, Springer. (Under Review)
 B.Tech CSE (AI & ML)  
 DAV Institute of Engineering & Technology, Jalandhar  
 mrsingh31524@gmail.com
+
+
