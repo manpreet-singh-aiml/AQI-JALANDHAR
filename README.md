@@ -165,7 +165,7 @@ seaborn==0.12.2
 
 ## 🙏 Acknowledgment
 
-This work was supported by a **Seed Fund Grant** under the project *"Personalized Inhalation Estimation of Spatial-Temporally Distributed Air Pollutants and Recommendations for Healthy Lifestyle"* by **Dr. B. R. Ambedkar National Institute of Technology (NIT), Jalandhar**.
+This work was supported by a **Seed Fund Grant** under the project *"Personalized Inhalation Estimation of Spatial-Temporally Distributed Air Pollutants and Recommendations for Healthy Lifestyle"* by **Dr. B. R. Ambedkar National Institute of Technology (NIT), Jalandhar** with a seed fund of INR 260000.
 
 > 🌟 **Principal Investigator (PI): Dr. Jaspal Kaur Saini** <br>
 > Recipient of the Seed Fund Grant under which this work was carried out.
