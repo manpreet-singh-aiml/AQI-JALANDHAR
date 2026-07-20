@@ -25,8 +25,8 @@ FedLSTM-AQI is a federated deep learning framework built to predict the Air Qual
 
 ## 📖 Publication
 
-> **FedLSTM-AQI: A Federated Deep Learning Framework for Air Quality Index Prediction**
-> Jaspal Kaur Saini, Manpreet Singh, Divya Bansal
+> **FedLSTM-AQI: A Federated Deep Learning Framework for Air Quality Index Prediction** <br>
+> Jaspal Kaur Saini, Manpreet Singh, Divya Bansal <br>
 > *Soft Computing* — Springer Nature (Q2, I.F. = 2.5, Scopus, SCIE)
 
 📄 **Read the Full Paper:** [https://rdcu.be/fueqk](https://rdcu.be/fueqk)
