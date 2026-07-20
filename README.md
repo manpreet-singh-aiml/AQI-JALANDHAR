@@ -8,7 +8,8 @@ as described in the paper:
 > **FedLSTM-AQI: A Federated Deep Learning Framework for 
 > Air Quality Index Prediction**  
 > Jaspal Kaur Saini, Manpreet Singh, Divya Bansal  
-> *Soft Computing, Springer (Under Review)*
+> *Soft Computing (Q2, I.F. = 2.5, Scopus, SCIE)*
+> *Publisher : Springer Nature*
 
 ---
 
@@ -125,13 +126,25 @@ phe==1.5.0
 
 ---
 
+## Acknowledgment 
+
+The work presented in this repository has been supported by a Seed Fund Grant under the project title “Personalized Inhalation Estimationof Spatial-Temporally distributed Air Pollutants and Recommendations for Healthy Lifestyle” by Dr. B. R. Ambedkar National Institute of Technology (NIT), Jalandhar, Punjab. Dr. Jaspal Kaur Saini received a seed grant to pursue the work. Mr. Manpreet Singh has worked as a Summer Intern at NIT J during this course of work. The authors sincerely express their thanks to the institute for providing thenecessary ﬁnancial support for this work.
+
+---
+
 ## Citation
 
 If you use this code, please cite:
-Saini, J.K., Singh, M., Bansal, D. (2025).
-FedLSTM-AQI: A Federated Deep Learning Framework
-for Air Quality Index Prediction.
-Soft Computing, Springer. (Under Review)
+
+Saini, J.K., Singh, M. & Bansal, D. FedLSTM-AQI: a federated deep learning framework for air quality index prediction. Soft Computing (2026). https://doi.org/10.1007/s00500-026-11403-x
+
+---
+
+## Read the Full Paper here : https://rdcu.be/fueqk
+
+---
+
+## DOI : https://doi.org/10.1007/s00500-026-11403-x
 
 ---
 
@@ -141,5 +154,6 @@ Soft Computing, Springer. (Under Review)
 B.Tech CSE (AI & ML)  
 DAV Institute of Engineering & Technology, Jalandhar  
 mrsingh31524@gmail.com
+
 
 
