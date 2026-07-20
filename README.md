@@ -57,12 +57,15 @@ graph LR
     PP2 <-->|🔐 Encrypted Weights| FLS
     PP3 <-->|🔐 Encrypted Weights| FLS
 
-    FLS["💻 Federated Learning Server<br/><br/>⚙️FedAvg<br/>+ Paillier HE on Dense Layer<br/>🌐 Global Model: LSTM / BiLSTM + Attention"]
+    FLS["💻 Federated Learning Server<br/><br/>⚙️FedAvg<br/><br>+ Paillier HE on Dense Layer<br/>🌐 Global Model: LSTM / BiLSTM + Attention"]
+
+    classDef clientBox font-size:20px,font-weight:bold;
+    class C1,C2,C3 clientBox
 
     style FLS fill:#2c3e50,color:#fff
     style C1 fill:#dbeafe,color:#000
-    style C2 fill:#fef9c3,color:#000
-    style C3 fill:#fee2e2,color:#000
+    style C2 fill:#dbeafe,color:#000
+    style C3 fill:#dbeafe,color:#000
     style DB1 fill:#fff,color:#000
     style LT1 fill:#fff,color:#000
     style PP1 fill:#fff,color:#000
@@ -165,10 +168,10 @@ seaborn==0.12.2
 
 This work was supported by a **Seed Fund Grant** under the project *"Personalized Inhalation Estimation of Spatial-Temporally Distributed Air Pollutants and Recommendations for Healthy Lifestyle"* by **Dr. B. R. Ambedkar National Institute of Technology (NIT), Jalandhar**.
 
-> 🌟 **Principal Investigator (PI): Dr. Jaspal Kaur Saini**
+> 🌟 **Principal Investigator (PI): Dr. Jaspal Kaur Saini** <br>
 > Recipient of the Seed Fund Grant under which this work was carried out.
 
-**Er. Manpreet Singh** contributed as a Summer Intern at NIT Jalandhar during the course of this work. The authors sincerely thank the institute for the necessary financial support.
+**Manpreet Singh** contributed as a Summer Intern at NIT Jalandhar during the course of this work. The authors sincerely thank the institute for the necessary financial support.
 
 ---
 
