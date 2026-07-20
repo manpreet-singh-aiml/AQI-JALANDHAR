@@ -37,29 +37,41 @@ FedLSTM-AQI is a federated deep learning framework built to predict the Air Qual
 ## 🏗️ Architecture
 
 ```mermaid
-graph TB
-    subgraph Clients["🔒 Heterogeneous Clients"]
-        C1["Client 1<br/>CPCB Station<br/>2017–2023 · 6 features"]
-        C2["Client 2<br/>Airveda Outdoor IoT<br/>6 features"]
-        C3["Client 3<br/>Airveda Indoor IoT<br/>PM2.5 + PM10 only"]
+graph LR
+    subgraph C1["🏙️ CPCB Monitoring Station"]
+        direction LR
+        DB1["🗄️ Database<br/>Collection 1"] --> LT1["🧠 Local Model<br/>Training"] --> PP1["🔒 Privacy<br/>Preserving"]
     end
 
-    C1 -->|🔐 Encrypted Weights| AGG
-    C2 -->|🔐 Encrypted Weights| AGG
-    C3 -->|🔐 Encrypted Weights| AGG
+    subgraph C2["📡 Outdoor IoT Sensor (Airveda Eye)"]
+        direction LR
+        DB2["🗄️ Database<br/>Collection 2"] --> LT2["🧠 Local Model<br/>Training"] --> PP2["🔒 Privacy<br/>Preserving"]
+    end
 
-    AGG["⚙️ Sample-Proportional FedAvg<br/>+ Paillier HE on Dense Layer"]
-    AGG --> GM["🌐 Global Model<br/>LSTM / BiLSTM + Attention"]
-    GM -.->|Broadcast| C1
-    GM -.->|Broadcast| C2
-    GM -.->|Broadcast| C3
+    subgraph C3["📶 Indoor IoT Sensor (Airveda)"]
+        direction LR
+        DB3["🗄️ Database<br/>Collection 3"] --> LT3["🧠 Local Model<br/>Training"] --> PP3["🔒 Privacy<br/>Preserving"]
+    end
 
-    style AGG fill:#6A5ACD,color:#fff
-    style GM fill:#FF6F00,color:#fff
-    style Clients fill:#4B8BBE,color:#fff
-    style C1 fill:#dce9f5,color:#000
-    style C2 fill:#dce9f5,color:#000
-    style C3 fill:#dce9f5,color:#000
+    PP1 <-->|🔐 Encrypted Weights| FLS
+    PP2 <-->|🔐 Encrypted Weights| FLS
+    PP3 <-->|🔐 Encrypted Weights| FLS
+
+    FLS["💻 Federated Learning Server<br/><br/>⚙️FedAvg<br/>+ Paillier HE on Dense Layer<br/>🌐 Global Model: LSTM / BiLSTM + Attention"]
+
+    style FLS fill:#2c3e50,color:#fff
+    style C1 fill:#dbeafe,color:#000
+    style C2 fill:#fef9c3,color:#000
+    style C3 fill:#fee2e2,color:#000
+    style DB1 fill:#fff,color:#000
+    style LT1 fill:#fff,color:#000
+    style PP1 fill:#fff,color:#000
+    style DB2 fill:#fff,color:#000
+    style LT2 fill:#fff,color:#000
+    style PP2 fill:#fff,color:#000
+    style DB3 fill:#fff,color:#000
+    style LT3 fill:#fff,color:#000
+    style PP3 fill:#fff,color:#000
 ```
 
 ---
