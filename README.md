@@ -57,7 +57,7 @@ graph LR
     PP2 <-->|🔐 Encrypted Weights| FLS
     PP3 <-->|🔐 Encrypted Weights| FLS
 
-    FLS["💻 Federated Learning Server<br/><br/>⚙️FedAvg<br/><br>+ Paillier HE on Dense Layer<br/>🌐 Global Model: LSTM / BiLSTM + Attention"]
+    FLS["💻 Federated Learning<br/>Server<br/><br/>⚙️ FedAvg + HE<br/><br/>🌐 Global Model: LSTM / BiLSTM + Attention"]
 
     classDef clientBox font-size:20px,font-weight:bold;
     class C1,C2,C3 clientBox
