@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌫️ FedLSTM-AQI
+# 🏭FedLSTM-AQI
 
 ### FedLSTM-AQI: A Federated Deep Learning Framework for Air Quality Index Prediction
 
@@ -48,7 +48,7 @@ graph LR
         DB2["🗄️ Database<br/>Collection 2"] --> LT2["🧠 Local Model<br/>Training"] --> PP2["🔒 Privacy<br/>Preserving"]
     end
 
-    subgraph C3["📶 Indoor IoT Sensor (Airveda)"]
+    subgraph C3["📶 Indoor IoT Sensor (Airveda Pulse Touch)"]
         direction LR
         DB3["🗄️ Database<br/>Collection 3"] --> LT3["🧠 Local Model<br/>Training"] --> PP3["🔒 Privacy<br/>Preserving"]
     end
@@ -57,8 +57,7 @@ graph LR
     PP2 <-->|🔐 Encrypted Weights| FLS
     PP3 <-->|🔐 Encrypted Weights| FLS
 
-    FLS["💻 Federated Learning<br/>Server<br/><br/>⚙️ FedAvg + HE<br/><br/>🌐 Global Model: LSTM / BiLSTM + Attention"]
-
+    FLS["💻 Federated Learning<br/>Server<br/><br/>⚙️ FedAvg + HE<br/><br/>🌐 Global Model: LSTM / BiLSTM + Attention"]   
     classDef clientBox font-size:20px,font-weight:bold;
     class C1,C2,C3 clientBox
 
