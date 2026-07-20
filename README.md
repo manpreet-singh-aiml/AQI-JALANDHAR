@@ -2,7 +2,7 @@
 
 # 🌫️ FedLSTM-AQI
 
-### Federated Deep Learning for Privacy-Preserving Air Quality Index Prediction
+### FedLSTM-AQI: A Federated Deep Learning Framework for Air Quality Index Prediction
 
 ![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.12-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
@@ -13,9 +13,13 @@
 [![Paper](https://img.shields.io/badge/📄_Read_the_Paper-Springer-blue?style=for-the-badge)](https://rdcu.be/fueqk)
 [![DOI](https://img.shields.io/badge/DOI-10.1007%2Fs00500--026--11403--x-orange?style=for-the-badge)](https://doi.org/10.1007/s00500-026-11403-x)
 
-*A federated deep learning framework that predicts Air Quality Index across heterogeneous IoT clients — without ever sharing raw data.*
-
 </div>
+
+---
+
+## 📌 Introduction
+
+FedLSTM-AQI is a federated deep learning framework built to predict the Air Quality Index while keeping each participant's raw data completely private. Air quality monitoring in a city like Jalandhar draws on very different data sources, from long-running government CPCB stations to short-term outdoor and indoor IoT sensors, and these sources rarely share the same time ranges or the same set of pollutants. Instead of pooling all of this sensitive data into one place, FedLSTM-AQI trains LSTM and BiLSTM with Attention models locally on each client and shares only encrypted model updates. A sample-proportional FedAvg strategy combines these updates into a single global model, and Paillier homomorphic encryption protects the output layer weights so that no readable parameters ever leave a client. The result is an accurate, reproducible, and privacy-preserving forecasting pipeline that works across genuinely heterogeneous data holders.
 
 ---
 
@@ -24,6 +28,9 @@
 > **FedLSTM-AQI: A Federated Deep Learning Framework for Air Quality Index Prediction**
 > Jaspal Kaur Saini, Manpreet Singh, Divya Bansal
 > *Soft Computing* — Springer Nature (Q2, I.F. = 2.5, Scopus, SCIE)
+
+📄 **Read the Full Paper:** [https://rdcu.be/fueqk](https://rdcu.be/fueqk)
+🔗 **DOI:** [https://doi.org/10.1007/s00500-026-11403-x](https://doi.org/10.1007/s00500-026-11403-x)
 
 ---
 
@@ -39,15 +46,20 @@ graph TB
 
     C1 -->|🔐 Encrypted Weights| AGG
     C2 -->|🔐 Encrypted Weights| AGG
-    C3 -->|🔐 Zero-padded + Encrypted| AGG
+    C3 -->|🔐 Encrypted Weights| AGG
 
     AGG["⚙️ Sample-Proportional FedAvg<br/>+ Paillier HE on Dense Layer"]
     AGG --> GM["🌐 Global Model<br/>LSTM / BiLSTM + Attention"]
-    GM -.->|Broadcast| Clients
+    GM -.->|Broadcast| C1
+    GM -.->|Broadcast| C2
+    GM -.->|Broadcast| C3
 
     style AGG fill:#6A5ACD,color:#fff
     style GM fill:#FF6F00,color:#fff
-    style Clients fill:#f0f4f8
+    style Clients fill:#4B8BBE,color:#fff
+    style C1 fill:#dce9f5,color:#000
+    style C2 fill:#dce9f5,color:#000
+    style C3 fill:#dce9f5,color:#000
 ```
 
 ---
@@ -139,7 +151,12 @@ seaborn==0.12.2
 
 ## 🙏 Acknowledgment
 
-This work was supported by a **Seed Fund Grant** under the project *"Personalized Inhalation Estimation of Spatial-Temporally Distributed Air Pollutants and Recommendations for Healthy Lifestyle"* by **Dr. B. R. Ambedkar National Institute of Technology (NIT), Jalandhar**. Dr. Jaspal Kaur Saini received the seed grant to pursue this work, and Mr. Manpreet Singh contributed as a Summer Intern at NIT Jalandhar. The authors sincerely thank the institute for the necessary financial support.
+This work was supported by a **Seed Fund Grant** under the project *"Personalized Inhalation Estimation of Spatial-Temporally Distributed Air Pollutants and Recommendations for Healthy Lifestyle"* by **Dr. B. R. Ambedkar National Institute of Technology (NIT), Jalandhar**.
+
+> 🌟 **Principal Investigator (PI): Dr. Jaspal Kaur Saini**
+> Recipient of the Seed Fund Grant under which this work was carried out.
+
+**Er. Manpreet Singh** contributed as a Summer Intern at NIT Jalandhar during the course of this work. The authors sincerely thank the institute for the necessary financial support.
 
 ---
 
@@ -163,7 +180,7 @@ This work was supported by a **Seed Fund Grant** under the project *"Personalize
 
 ## 📬 Contact
 
-**Manpreet Singh**
+**Er. Manpreet Singh**
 B.Tech CSE (AI & ML) · DAV Institute of Engineering & Technology, Jalandhar
 📧 mrsingh31524@gmail.com
 
