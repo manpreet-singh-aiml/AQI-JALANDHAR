@@ -1,55 +1,86 @@
-# FedLSTM-AQI: Federated Deep Learning for Air Quality Index Prediction
+<div align="center">
 
-This repository contains the complete implementation of 
-**FedLSTM-AQI**, a federated deep learning framework for 
-privacy-preserving Air Quality Index (AQI) prediction, 
-as described in the paper:
+# 🌫️ FedLSTM-AQI
 
-> **FedLSTM-AQI: A Federated Deep Learning Framework for 
-> Air Quality Index Prediction**  
-> Jaspal Kaur Saini, Manpreet Singh, Divya Bansal  
-> *Soft Computing (Q2, I.F. = 2.5, Scopus, SCIE)*
-> *Publisher : Springer Nature*
+### Federated Deep Learning for Privacy-Preserving Air Quality Index Prediction
+
+![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-2.12-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
+![Federated Learning](https://img.shields.io/badge/Federated-Learning-4B8BBE?style=for-the-badge)
+![Paillier HE](https://img.shields.io/badge/Paillier-Homomorphic%20Encryption-6A5ACD?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+
+[![Paper](https://img.shields.io/badge/📄_Read_the_Paper-Springer-blue?style=for-the-badge)](https://rdcu.be/fueqk)
+[![DOI](https://img.shields.io/badge/DOI-10.1007%2Fs00500--026--11403--x-orange?style=for-the-badge)](https://doi.org/10.1007/s00500-026-11403-x)
+
+*A federated deep learning framework that predicts Air Quality Index across heterogeneous IoT clients — without ever sharing raw data.*
+
+</div>
 
 ---
 
-## Project Structure
+## 📖 Publication
+
+> **FedLSTM-AQI: A Federated Deep Learning Framework for Air Quality Index Prediction**
+> Jaspal Kaur Saini, Manpreet Singh, Divya Bansal
+> *Soft Computing* — Springer Nature (Q2, I.F. = 2.5, Scopus, SCIE)
+
+---
+
+## 🏗️ Architecture
+
+```mermaid
+graph TB
+    subgraph Clients["🔒 Heterogeneous Clients"]
+        C1["Client 1<br/>CPCB Station<br/>2017–2023 · 6 features"]
+        C2["Client 2<br/>Airveda Outdoor IoT<br/>6 features"]
+        C3["Client 3<br/>Airveda Indoor IoT<br/>PM2.5 + PM10 only"]
+    end
+
+    C1 -->|🔐 Encrypted Weights| AGG
+    C2 -->|🔐 Encrypted Weights| AGG
+    C3 -->|🔐 Zero-padded + Encrypted| AGG
+
+    AGG["⚙️ Sample-Proportional FedAvg<br/>+ Paillier HE on Dense Layer"]
+    AGG --> GM["🌐 Global Model<br/>LSTM / BiLSTM + Attention"]
+    GM -.->|Broadcast| Clients
+
+    style AGG fill:#6A5ACD,color:#fff
+    style GM fill:#FF6F00,color:#fff
+    style Clients fill:#f0f4f8
+```
+
+---
+
+## ✨ Features
+
+- 🔄 **End-to-end pipeline** — from raw CPCB data to denormalized AQI forecasts
+- 📊 **CPCB-standard AQI** sub-index computation across 6 pollutants
+- 🧠 **Two architectures** — LSTM & BiLSTM + Attention, both with Layer Norm, residual connections, dropout, and gradient-clipped Adam
+- 🔬 **Statistical rigor** — 5 independent seeds (42, 123, 256, 789, 1024), reported as mean ± std with paired t-test significance
+- 🤝 **Genuinely heterogeneous FL** — 3 real clients with differing time ranges and feature sets
+- 🧩 **Structural zero-padding** for the feature-incomplete indoor client
+- 🔐 **Paillier homomorphic encryption** on the output Dense layer
+- 🚫 **Leakage-free** chronological split with Min-Max scaling
+- 📈 **Full metric suite** — RMSE, MAE, RMSLE, MAPE, R² (normalized + AQI scale)
+
+---
+
+## 🗂️ Project Structure
 
 ```
 AQI-JALANDHAR/
 ├── preprocess.py          # Timestamp correction + missing value interpolation
 ├── compute_aqi.py         # CPCB-standard AQI sub-index computation
-├── lstm_training.py       # LSTM model — 5-seed training + sensor validation
-├── bilstm_training.py     # BiLSTM + Attention — 5-seed training + sensor validation
+├── lstm_training.py       # LSTM — 5-seed training + sensor validation
+├── bilstm_training.py     # BiLSTM + Attention — 5-seed training + validation
 ├── federated_approach.py  # Federated Learning (FedAvg + Paillier HE)
 └── requirements.txt
 ```
 
-## Features
-
-- Complete end-to-end AQI forecasting pipeline
-- Chronological train-test split with leakage-free Min-Max scaling
-- CPCB-based AQI sub-index computation (6 pollutants)
-- LSTM and BiLSTM + Attention architectures with:
-  - Layer Normalization
-  - Residual connections
-  - Dropout
-  - Adam optimizer with gradient clipping
-- Statistical reliability: 5 independent runs (seeds: 42, 123, 256, 789, 1024)
-- Results reported as mean ± std with paired t-test significance
-- Federated Learning with 3 genuinely heterogeneous clients:
-  - Client 1: CPCB monitoring station (2017–2023, ~51,864 records)
-  - Client 2: Airveda outdoor IoT sensor (Jun–Sep, all 6 features)
-  - Client 3: Airveda indoor IoT sensor (Jun–Sep, PM2.5 + PM10 only)
-- Structural zero-padding for feature-incomplete indoor client
-- Sample-proportional FedAvg aggregation
-- Paillier homomorphic encryption on output Dense layer
-- Evaluation metrics: RMSE, MAE, RMSLE, MAPE, R²
-- Both normalized and denormalized (AQI scale) reporting
-
 ---
 
-## Installation
+## 🚀 Quick Start
 
 ```bash
 git clone https://github.com/SINGH-MANPREET-1708/AQI-JALANDHAR.git
@@ -57,103 +88,87 @@ cd AQI-JALANDHAR
 pip install -r requirements.txt
 ```
 
+### Run the pipeline
+
+```bash
+python preprocess.py          # jld_aqi.csv          → jld_aqi_filled.csv
+python compute_aqi.py         # jld_aqi_filled.csv   → jld_aqi_with_aqi.csv
+python lstm_training.py       # centralized LSTM baseline (5 seeds)
+python bilstm_training.py     # centralized BiLSTM + Attention baseline
+python federated_approach.py  # FedAvg over 5 rounds · 3 clients · Paillier HE
+```
+
+<details>
+<summary>📋 <b>Step-by-step details</b></summary>
+
+| Step | Script | Input → Output |
+|------|--------|----------------|
+| 1 | `preprocess.py` | Raw CPCB → interpolated data |
+| 2 | `compute_aqi.py` | Filled data → AQI-labeled data |
+| 3 | `lstm_training.py` | Trains 5 seeds, evaluates on CPCB test + Airveda sensors |
+| 4 | `bilstm_training.py` | Same protocol, BiLSTM + Attention |
+| 5 | `federated_approach.py` | FedAvg (5 rounds), Paillier HE on Dense layer, evaluates both global models |
+
+</details>
+
 ---
 
-## Dataset
+## 📦 Dataset
 
-The CPCB training dataset is **not included** in this 
-repository due to size constraints. Download it from:
+The CPCB training dataset is **not bundled** here due to size. Download from:
 
 - [CPCB AQI Repository](https://airquality.cpcb.gov.in/ccr/)
 - [Kaggle Mirror](https://www.kaggle.com/datasets/abhisheksjha/time-series-air-quality-data-of-india-2010-2023)
 
-Filter for **Jalandhar, Punjab** after download.
+> Filter for **Jalandhar, Punjab** after download.
 
-Sensor datasets (Airveda outdoor + indoor) were collected 
-at NIT Jalandhar campus and are available from the 
-corresponding author upon reasonable request.
+Sensor datasets (Airveda outdoor + indoor, collected at NIT Jalandhar) are available from the corresponding author upon reasonable request.
 
 ---
 
-## Usage
+## 🛠️ Requirements
 
-### Step 1 — Preprocess raw CPCB data
-```bash
-python preprocess.py
 ```
-Input: `jld_aqi.csv`  
-Output: `jld_aqi_filled.csv`
-
-### Step 2 — Compute AQI
-```bash
-python compute_aqi.py
-```
-Input: `jld_aqi_filled.csv`  
-Output: `jld_aqi_with_aqi.csv`
-
-### Step 3 — Train LSTM (centralized baseline)
-```bash
-python lstm_training.py
-```
-Trains over 5 seeds, evaluates on CPCB test set and 
-Airveda sensor data.
-
-### Step 4 — Train BiLSTM + Attention (centralized baseline)
-```bash
-python bilstm_training.py
-```
-Same evaluation protocol as LSTM.
-
-### Step 5 — Federated Learning with Paillier HE
-```bash
-python federated_approach.py
-```
-Runs FedAvg over 5 rounds with 3 real heterogeneous 
-clients. Paillier homomorphic encryption applied to 
-output Dense layer. Evaluates both LSTM and BiLSTM 
-global models.
-
----
-
-## Requirements
-numpy==1.23.5
-pandas==1.5.3
-matplotlib==3.7.1
+numpy==1.23.5       scikit-learn==1.2.2
+pandas==1.5.3       tensorflow==2.12.0
+matplotlib==3.7.1   phe==1.5.0
 seaborn==0.12.2
-scikit-learn==1.2.2
-tensorflow==2.12.0
-phe==1.5.0
+```
 
 ---
 
-## Acknowledgment 
+## 🙏 Acknowledgment
 
-The work presented in this repository has been supported by a Seed Fund Grant under the project title “Personalized Inhalation Estimationof Spatial-Temporally distributed Air Pollutants and Recommendations for Healthy Lifestyle” by Dr. B. R. Ambedkar National Institute of Technology (NIT), Jalandhar, Punjab. Dr. Jaspal Kaur Saini received a seed grant to pursue the work. Mr. Manpreet Singh has worked as a Summer Intern at NIT J during this course of work. The authors sincerely express their thanks to the institute for providing thenecessary ﬁnancial support for this work.
-
----
-
-## Citation
-
-If you use this code, please cite:
-
-Saini, J.K., Singh, M. & Bansal, D. FedLSTM-AQI: a federated deep learning framework for air quality index prediction. Soft Computing (2026). https://doi.org/10.1007/s00500-026-11403-x
+This work was supported by a **Seed Fund Grant** under the project *"Personalized Inhalation Estimation of Spatial-Temporally Distributed Air Pollutants and Recommendations for Healthy Lifestyle"* by **Dr. B. R. Ambedkar National Institute of Technology (NIT), Jalandhar**. Dr. Jaspal Kaur Saini received the seed grant to pursue this work, and Mr. Manpreet Singh contributed as a Summer Intern at NIT Jalandhar. The authors sincerely thank the institute for the necessary financial support.
 
 ---
 
-## Read the Full Paper here : https://rdcu.be/fueqk
+## 📚 Citation
+
+```bibtex
+@article{saini2026fedlstmaqi,
+  title   = {FedLSTM-AQI: a federated deep learning framework for air quality index prediction},
+  author  = {Saini, Jaspal Kaur and Singh, Manpreet and Bansal, Divya},
+  journal = {Soft Computing},
+  year    = {2026},
+  doi     = {10.1007/s00500-026-11403-x},
+  url     = {https://doi.org/10.1007/s00500-026-11403-x},
+  publisher = {Springer Nature}
+}
+```
 
 ---
 
-## DOI : https://doi.org/10.1007/s00500-026-11403-x
+<div align="center">
 
----
+## 📬 Contact
 
-## Contact
+**Manpreet Singh**
+B.Tech CSE (AI & ML) · DAV Institute of Engineering & Technology, Jalandhar
+📧 mrsingh31524@gmail.com
 
-**Manpreet Singh**  
-B.Tech CSE (AI & ML)  
-DAV Institute of Engineering & Technology, Jalandhar  
-mrsingh31524@gmail.com
+📄 [**Read the Full Paper**](https://rdcu.be/fueqk) · 🔗 [**DOI**](https://doi.org/10.1007/s00500-026-11403-x)
 
+⭐ *If this work helped you, consider starring the repo!*
 
-
+</div>
